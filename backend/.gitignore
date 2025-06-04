@@ -1,0 +1,14 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+.env.*  # optional: ignore .env.production, .env.development, etc.
+
+# Logs
+logs
+*.log
+
+# OS / Editor specific
+.DS_Store
+.vscode/
