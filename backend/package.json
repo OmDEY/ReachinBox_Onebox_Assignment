@@ -20,10 +20,10 @@
     "slack": "^11.0.2"
   },
   "scripts": {
-    "start": "nodemon index.js",
-    "imap": "nodemon imapHandler.js",
+    "index": "nodemon index.js",
+    "imap": "node imapHandler.js",
     "label": "nodemon labelProcessor.js",
-    "dev": "npm-run-all --parallel start imap label"
+    "start": "npm-run-all --parallel index imap"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
