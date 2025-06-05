@@ -1,58 +1,57 @@
-Email Processing and Categorization System
-This project automatically fetches emails via IMAP, categorizes them using AI (Gemini), stores them in Elasticsearch, organizes them into folders, and sends notifications.
 
-Features
-📧 IMAP email fetching with persistent sequence tracking
+# 📬 Email Processing & Categorization System
 
-🤖 AI-powered categorization using Gemini API
+This project automatically **fetches emails**, categorizes them using **AI (Gemini)**, stores them in **Elasticsearch**, moves them into appropriate folders, and sends **notifications** via Slack or webhooks.
 
-🗄️ Elasticsearch storage for structured email data
+![System Architecture](https://github.com/user-attachments/assets/21e00c01-1044-4d03-b496-cd4840d8759e)
 
-📂 Automatic folder organization based on categories
+---
 
-🔔 Slack and webhook notifications
+## 🔧 Features
 
-⏱️ Rate limiting and caching for API efficiency
+- 📥 **IMAP email fetching** with persistent sequence tracking  
+- 🧠 **AI-powered categorization** using Gemini API  
+- 📦 **Elasticsearch** storage for structured email data  
+- 🗂 **Auto folder organization** based on categories  
+- 🔔 **Slack & webhook notifications**  
+- 🚦 **Rate limiting & caching** for efficiency  
+- 🧬 **Vector store** for AI reply rules using ChromaDB  
+- 🌐 **REST API** to interact with processed email data  
 
-🔍 Vector storage for reply rules (ChromaDB)
+---
 
-🌐 REST API for email management
+## 🧱 Architecture Overview
 
-![deepseek_mermaid_20250605_1605f0](https://github.com/user-attachments/assets/21e00c01-1044-4d03-b496-cd4840d8759e)
+- **IMAP Handler** → Connects and fetches emails  
+- **Email Fetcher** → Parses and stores emails in ES  
+- **Gemini Client** → Categorizes emails with AI  
+- **IMAP Mover** → Sorts emails into labeled folders  
+- **Notification Service** → Sends updates via Slack/webhook  
+- **Vector Store** → Handles embeddings for reply rules  
+- **REST API** → Serves data to frontend clients  
 
-Components:
-IMAP Handler: Manages connections and email fetching
+---
 
-Email Fetcher: Parses emails and saves to Elasticsearch
+## ⚙️ Setup Instructions
 
-Gemini Client: Categorizes emails using AI (with caching)
+### ✅ Prerequisites
 
-IMAP Mover: Organizes emails into folders
+- Node.js v16+
+- Elasticsearch or OpenSearch instance
+- ChromaDB instance
+- IMAP-enabled email account
+- Google Gemini API Key
 
-Notification System: Sends Slack/webhook alerts
+### 📦 1. Install Dependencies
 
-Vector Store: Manages reply rules embeddings (ChromaDB)
+```bash
+npm install
+```
 
-REST API: Provides access to processed emails
+### 🔐 2. Create `.env` Configuration
 
-Setup Instructions
-Prerequisites
-Node.js v16+
-
-Elasticsearch/OpenSearch instance
-
-ChromaDB instance
-
-IMAP-enabled email account
-
-Google Gemini API key
-
-1. Install dependencies
-   npm install
-2. Configure environment variables
-   Create .env file:
-
-   # Email Configuration
+```env
+# Email Configuration
 EMAIL_1_HOST=your-imap-server.com
 EMAIL_1_PORT=993
 EMAIL_1_USER=your@email.com
@@ -64,34 +63,46 @@ ES_URL=http://localhost:9200
 # Gemini
 GEMINI_API_KEY=your-gemini-key
 
-# Notifications (optional)
+# Notifications (Optional)
 SLACK_WEBHOOK_URL=https://hooks.slack.com/...
 WEBHOOK_SITE_URL=https://your-webhook-url
 
 # ChromaDB
 CHROMA_URL=http://localhost:8000
 
-# Server
+# Server Port
 PORT=5000
+```
 
-3. Initialize Elasticsearch index
-   node createIndex.js
+### 🧱 3. Initialize Elasticsearch Index
 
-4. Start services
-   # Start email processing
+```bash
+node createIndex.js
+```
+
+### 🚀 4. Start Services
+
+```bash
+# Start IMAP Email Processing
 node imapHandler.js
 
-# Start REST API server
+# Start API Server
 node index.js
+```
 
-5. Verify operation
-Check API status:
+### 🧪 5. Test API
 
+```bash
 curl http://localhost:5000/api/ping
+```
 
-Configuration Files
-config/emailAccounts.js
+---
 
+## 📁 Configuration Example
+
+`config/emailAccounts.js`:
+
+```js
 module.exports = [
   {
     id: "account1",
@@ -103,97 +114,105 @@ module.exports = [
     enabled: true
   }
 ];
+```
 
-API Endpoints
-GET /api/ping: Service health check
+---
 
-GET /api/emails: Retrieve processed emails
+## 📡 API Endpoints
 
-POST /api/ai-reply: Generate AI-powered email replies
+| Method | Endpoint            | Description                         |
+|--------|---------------------|-------------------------------------|
+| GET    | `/api/ping`         | Health check                        |
+| GET    | `/api/emails`       | Fetch processed emails              |
+| POST   | `/api/ai-reply`     | Generate AI-powered email replies   |
 
-Key Implementation Details
-Email Processing Flow:
-IMAP connection established
+---
 
-New emails fetched since last processed sequence
+## 🔁 Email Processing Flow
 
-Emails parsed and stored in Elasticsearch
+1. IMAP connection established  
+2. Emails fetched since the last sequence  
+3. Emails parsed & indexed into Elasticsearch  
+4. Gemini API assigns category  
+5. Email moved to appropriate folder (e.g., `Interested`)  
+6. Slack/Webhook notifications sent  
+7. Metadata tracked in `lastSeqMap.json`
 
-Gemini API categorizes email content
+---
 
-Email moved to categorized folder (e.g., "Interested")
+## 🧠 Gemini Categorization
 
-Notifications sent via Slack/webhook
+- Uses `gemini-1.5-flash` model  
+- Prompt:  
+  ```
+  Categorize into: Interested, Meeting Booked, Not Interested, Spam, Out of Office
+  ```
+- ⏳ Cached for 1 hour  
+- 🚦 Rate-limited: 10 requests/minute
 
-Process metadata persisted in lastSeqMap.json
+---
 
-Gemini Categorization:
-Uses gemini-1.5-flash model
+## 🗃 Elasticsearch Email Schema
 
-Prompt: "Categorize into: Interested, Meeting Booked, Not Interested, Spam, Out of Office"
-
-Responses cached locally for 1 hour
-
-Rate limited (10 requests/minute)
-
-Elasticsearch Schema:
-
+```json
 {
-  from: { type: "text" },
-  to: { type: "text" },
-  subject: { type: "text" },
-  date: { type: "date" },
-  body: { type: "text" },
-  folder: { type: "keyword" },
-  account: { type: "keyword" },
-  category: { type: "keyword" },
-  messageId: { type: "keyword" }
+  "from": "text",
+  "to": "text",
+  "subject": "text",
+  "date": "date",
+  "body": "text",
+  "folder": "keyword",
+  "account": "keyword",
+  "category": "keyword",
+  "messageId": "keyword"
 }
+```
 
-Rate Limiting
-Gemini API: 10 requests/minute
+---
 
-IMAP operations: Sequential processing with 2s delays
+## ⏱ Rate Limiting & Scheduling
 
-Account processing: 5 minutes between accounts
+| Action              | Limit                  |
+|---------------------|-------------------------|
+| Gemini API          | 10 requests/min         |
+| IMAP Email Fetching | 2s delay per sequence   |
+| Per Account         | 5 minutes gap           |
 
-Monitoring
-Process logs: processedEmails.log
+---
 
-Last sequence tracking: lastSeqMap.json
+## 📊 Monitoring & Logs
 
-Gemini cache: ./cache/*.json
+- `processedEmails.log` → Email processing logs  
+- `lastSeqMap.json` → Tracks last email sequence  
+- `./cache/*.json` → Gemini API response cache  
 
-Environment Variables
-Variable	Required	Description
-EMAIL_1_*	Yes	IMAP credentials
-ES_URL	Yes	Elasticsearch URL
-GEMINI_API_KEY	Yes	Gemini API key
-SLACK_WEBHOOK_URL	No	Slack integration URL
-WEBHOOK_SITE_URL	No	Generic webhook URL
-CHROMA_URL	No	ChromaDB instance URL
-PORT	No	API server port (default: 5000)
-Troubleshooting
-IMAP connection issues:
+---
 
-Verify credentials and server settings
+## 🌍 Environment Variables
 
-Check firewall/port access (typically port 993)
+| Variable             | Required | Description                          |
+|----------------------|----------|--------------------------------------|
+| `EMAIL_1_*`          | ✅       | IMAP credentials                     |
+| `ES_URL`             | ✅       | Elasticsearch instance URL           |
+| `GEMINI_API_KEY`     | ✅       | Gemini AI API key                    |
+| `SLACK_WEBHOOK_URL`  | ❌       | Slack notification webhook           |
+| `WEBHOOK_SITE_URL`   | ❌       | Webhook URL for alerts               |
+| `CHROMA_URL`         | ❌       | ChromaDB instance URL                |
+| `PORT`               | ❌       | API server port (default: 5000)      |
 
-Elasticsearch errors:
+---
 
-Ensure cluster is running and accessible
+## 🧰 Troubleshooting
 
-Verify index exists (raw_emails)
+### IMAP Issues
+- ✅ Validate email credentials
+- 🔐 Ensure correct ports (993 for IMAP SSL)
+- 🧱 Server must support folder creation
 
-Gemini API failures:
+### Elasticsearch
+- 🟢 Confirm it's running and accessible
+- 🔍 Ensure `raw_emails` index exists
 
-Check rate limits (60 requests/minute)
-
-Verify API key permissions
-
-Folder creation issues:
-
-Ensure IMAP account has create folder permissions
-
-Check server-specific naming restrictions
+### Gemini API
+- 🔑 Check API key and permissions
+- 🚦 Watch rate limits (60/min per API key)
