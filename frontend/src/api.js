@@ -1,4 +1,5 @@
-const BASE_URL = "https://reachinbox-onebox-assignment.onrender.com/api";
+const BASE_URL = "http://localhost:5000/api/";
+// const BASE_URL = "https://reachinbox-onebox-assignment.onrender.com/api/";
 
 export async function fetchEmails() {
   const res = await fetch(BASE_URL);
@@ -14,7 +15,7 @@ export async function searchEmails(query) {
 }
 
 export const getReplySuggestions = async (subject, body) => {
-  const res = await fetch(`${BASE_URL}/ai-reply/generate-reply`, {
+  const res = await fetch(`${BASE_URL}ai-reply/generate-reply`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ subject, body })
@@ -28,7 +29,7 @@ export const getReplySuggestions = async (subject, body) => {
 };
 
 export const generateReply = async (subject, body) => {
-  const res = await fetch(`${BASE_URL}/generate-reply`, {
+  const res = await fetch(`${BASE_URL}generate-reply`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ subject, body })
@@ -42,7 +43,7 @@ export const generateReply = async (subject, body) => {
 };
 
 export const sendMailReply = async (to, subject, text, messageId) => {
-  const res = await fetch(`${BASE_URL}/send-reply`, {
+  const res = await fetch(`${BASE_URL}send-reply`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ to, subject, text, messageId })

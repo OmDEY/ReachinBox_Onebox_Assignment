@@ -1,7 +1,8 @@
 // utils/slackNotifier.js
 const axios = require("axios");
+require("dotenv").config();
 
-const SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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";
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
 const sendSlackNotification = async (emailDetails) => {
   try {

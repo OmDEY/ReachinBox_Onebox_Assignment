@@ -4,6 +4,9 @@ console.log("process.env.CHROMA_URL >>> ", process.env.CHROMA_URL)
 const client = new ChromaClient({
   baseUrl: process.env.CHROMA_URL || "http://localhost:8000",
 });
+// const client = new ChromaClient({
+//   baseUrl: "http://localhost:8000",
+// });
 
 let collection = null;
 

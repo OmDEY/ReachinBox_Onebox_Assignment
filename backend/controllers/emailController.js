@@ -121,7 +121,7 @@ exports.getEmails = async (req, res) => {
       body: queryBody,
     });
 
-    console.log("response >>>> ", response.body.hits.hits);
+    // console.log("response >>>> ", response.body.hits.hits);
 
     const hits = response?.body?.hits?.hits || [];
     const total = response?.body?.hits?.total?.value || 0;
