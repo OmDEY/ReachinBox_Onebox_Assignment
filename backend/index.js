@@ -5,7 +5,7 @@ const app = express();
 
 const emailRoutes = require("./routes/emailRoutes");
 const AIReplyRoutes = require("./routes/AIReplyRoutes");
-const { initVectorDB } = require("./utils/vectorStore");
+const { initVectorDB, searchRelevantRules } = require("./utils/vectorStore");
 
 app.use(cors());
 app.use(express.json());
@@ -13,6 +13,18 @@ app.use(express.json());
 app.use("/api", emailRoutes);
 app.use("/api/ai-reply", AIReplyRoutes);
 app.use("/api/emails", emailRoutes);
+
+
+app.get("/api/ping", async (req, res) => {
+  try {
+    await searchRelevantRules([0.1, 0.2, 0.3, 0.4]); // dummy vector (example)
+    res.send("✅ Server and ChromaDB are alive");
+  } catch (err) {
+    console.error("Ping error:", err);
+    res.status(500).send("❌ Chroma ping failed");
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
