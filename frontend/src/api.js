@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000/api/";
+const BASE_URL = "https://reachinbox-onebox-assignment.onrender.com/api";
 
 export async function fetchEmails() {
   const res = await fetch(BASE_URL);
