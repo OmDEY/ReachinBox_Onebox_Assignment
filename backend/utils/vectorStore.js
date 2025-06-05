@@ -2,7 +2,7 @@ const { ChromaClient } = require("chromadb");
 require("dotenv").config();
 console.log("process.env.CHROMA_URL >>> ", process.env.CHROMA_URL)
 const client = new ChromaClient({
-  baseUrl: process.env.CHROMA_URL,
+  baseUrl: process.env.CHROMA_URL || "http://localhost:8000",
 });
 
 let collection = null;

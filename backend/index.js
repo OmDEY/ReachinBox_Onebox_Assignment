@@ -17,7 +17,7 @@ app.use("/api/emails", emailRoutes);
 
 app.get("/api/ping", async (req, res) => {
   try {
-    await searchRelevantRules([0.1, 0.2, 0.3, 0.4]); // dummy vector (example)
+    // await searchRelevantRules([0.1, 0.2, 0.3, 0.4]); // dummy vector (example)
     res.send("✅ Server and ChromaDB are alive");
   } catch (err) {
     console.error("Ping error:", err);
