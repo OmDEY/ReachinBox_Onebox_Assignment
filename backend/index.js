@@ -5,7 +5,8 @@ const app = express();
 
 const emailRoutes = require("./routes/emailRoutes");
 const AIReplyRoutes = require("./routes/AIReplyRoutes");
-const { initVectorDB, searchRelevantRules } = require("./utils/vectorStore");
+const connectMongo = require("./db/connectMongo");
+const { initVectorDB, searchRelevantRules } = require("./utils/mongoVectorDb");
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +29,7 @@ app.get("/api/ping", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
+  await connectMongo();
   await initVectorDB();
   console.log(`🚀 Server running on port ${PORT}`);
 });

@@ -4,7 +4,7 @@ const router = express.Router();
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { addRule, searchRelevantRules } = require("../utils/vectorStore");
+const { addRule, searchRelevantRules } = require("../utils/mongoVectorDb");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // exports.getEmails = async (req, res) => {
