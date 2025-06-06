@@ -15,6 +15,7 @@
     "imap": "^0.8.19",
     "ioredis": "^5.6.1",
     "mailparser": "^3.7.3",
+    "mongoose": "^8.15.1",
     "openai": "^4.103.0",
     "redis": "^5.1.0",
     "slack": "^11.0.2"
