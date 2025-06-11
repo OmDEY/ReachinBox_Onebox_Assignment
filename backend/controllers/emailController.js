@@ -199,19 +199,23 @@ exports.generateReply = async (req, res) => {
   const rules = await searchRelevantRules(emailEmbedding);
 
   const prompt = `
-You are an AI assistant helping reply to job-related emails.
+You are an AI assistant helping respond to job-related emails.
 
-Use the following rules to guide your reply:
+Here are some example rules:
 ${rules.join("\n")}
 
-Keep the reply short, polite, and professional.
-Include the following booking link exactly: https://cal.com/example
-Do NOT add any extra salutations or signatures.
+Guidelines:
+- Keep the reply short, polite, and professional.
+- If the email shows interest, always include this link: https://cal.com/example
+- Do not include salutations like "Regards" or "Sincerely."
+- If the message is spam, irrelevant, or cannot be understood, respond accordingly.
 
-Email received:
-"${email}"
+Received email content:
+"""
+${fullEmail}
+"""
 
-Reply concisely:
+Now generate a short reply:
 `;
 
   const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
